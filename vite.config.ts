@@ -10,12 +10,10 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  // Keep a stable origin so localStorage persists across app restarts.
-  // Different ports (e.g. 5173 vs 5174) use different storage buckets.
+  // Allow app to run on any available port
   server: {
     host: "localhost",
-    port: 5173,
-    strictPort: true,
+    strictPort: false,
   },
   // File types to support raw imports. Never add .css, .tsx, or .ts files to this.
   assetsInclude: ["**/*.svg", "**/*.csv"],
