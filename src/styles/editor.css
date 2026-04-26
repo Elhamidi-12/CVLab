@@ -1,0 +1,495 @@
+/* ─── Tiptap Rich Text Editor ─────────────────────────────────────────────── */
+.ProseMirror {
+  outline: none;
+  min-height: inherit;
+}
+
+.ProseMirror p {
+  margin: 0 0 5px 0;
+}
+
+.ProseMirror p:last-child {
+  margin-bottom: 0;
+}
+
+.ProseMirror ul,
+.ProseMirror ol {
+  padding-left: 18px;
+  margin: 3px 0;
+}
+
+.ProseMirror li {
+  margin: 1px 0;
+}
+
+.ProseMirror li > p {
+  margin: 0;
+}
+
+.ProseMirror strong {
+  font-weight: 700;
+}
+
+.ProseMirror em {
+  font-style: italic;
+}
+
+.ProseMirror u {
+  text-decoration: underline;
+}
+
+/* Placeholder */
+.ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #94a3b8;
+  pointer-events: none;
+  height: 0;
+}
+
+/* ─── Rich Text Preview (inside A4 document) ──────────────────────────────── */
+.rt-preview {
+  color: inherit;
+}
+
+.rt-preview p {
+  margin: 0 0 4px 0;
+}
+
+.rt-preview p:last-child {
+  margin-bottom: 0;
+}
+
+.rt-preview ul,
+.rt-preview ol {
+  margin: 2px 0 4px;
+  padding-left: 18px;
+  list-style-position: outside;
+}
+
+.rt-preview ul {
+  list-style-type: disc;
+}
+
+.rt-preview ol {
+  list-style-type: decimal;
+}
+
+.rt-preview ul ul {
+  list-style-type: circle;
+}
+
+.rt-preview ol ol {
+  list-style-type: lower-alpha;
+}
+
+.rt-preview li {
+  margin: 1px 0;
+}
+
+.rt-preview li > p {
+  margin: 0;
+}
+
+.rt-preview strong {
+  font-weight: 700;
+}
+
+.rt-preview em {
+  font-style: italic;
+}
+
+.rt-preview u {
+  text-decoration: underline;
+  text-underline-offset: 0.08em;
+}
+
+/* ─── Cover Letter Preview Chrome ─────────────────────────────────────────── */
+.cover-letter-preview {
+  position: relative;
+  width: 100%;
+  max-width: 820px;
+  margin: 0 auto;
+}
+
+.cover-letter-preview__measure {
+  position: absolute;
+  top: 0;
+  left: -9999px;
+  width: 794px;
+  pointer-events: none;
+  visibility: hidden;
+  font-family: var(--preview-font-family, inherit);
+}
+
+.cover-letter-preview__stack {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.cover-letter-preview__page {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 794 / 1123;
+  overflow: hidden;
+  background: white;
+  border-radius: 2px;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.06),
+    0 6px 20px rgba(0, 0, 0, 0.08),
+    0 16px 48px rgba(0, 0, 0, 0.06);
+}
+
+.cover-letter-preview__page-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 794px;
+  transform-origin: top left;
+  transform: scale(var(--preview-scale, 1)) translateY(var(--preview-translate-y, 0px));
+  font-family: var(--preview-font-family, inherit);
+}
+
+.cover-letter-preview__top-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--preview-top-mask-height, 0%);
+  background: white;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.cover-letter-preview__bottom-mask {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--preview-bottom-mask-height, 0%);
+  background: white;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.cover-letter-preview__page-badge {
+  position: absolute;
+  bottom: 10px;
+  right: 12px;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: #94a3b8;
+  background: rgba(255, 255, 255, 0.85);
+  padding: 2px 7px;
+  border-radius: 4px;
+  border: 1px solid #e2e8f0;
+  pointer-events: none;
+  -webkit-user-select: none;
+  user-select: none;
+  z-index: 3;
+}
+
+/* ─── DIN 5008 Cover Letter Layout ────────────────────────────────────────── */
+.cover-letter-din-template {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: 0 76px;
+}
+
+/* ─── DIN 5008 Cover Letter Layout ────────────────────────────────────────── */
+.din5008-letter {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 100%;
+  padding: 16mm 5mm 1mm;
+  color: #0f172a;
+  font-size: 11.5px;
+  line-height: 1.65;
+  font-kerning: normal;
+  font-family: inherit;
+}
+
+.din5008-letter__top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12mm;
+  margin-bottom: 10mm;
+}
+
+.din5008-letter__sender {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5mm;
+  color: #64748b;
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.din5008-letter__sender-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.din5008-letter__date {
+  min-width: 35mm;
+  text-align: right;
+  color: #64748b;
+  font-size: 11px;
+}
+
+.din5008-letter__recipient {
+  display: flex;
+  flex-direction: column;
+  gap: 1mm;
+  margin-bottom: 8mm;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.din5008-letter__recipient-name {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.din5008-letter__recipient-address {
+  white-space: pre-line;
+  color: #475569;
+}
+
+.din5008-letter__subject {
+  margin: 0 0 8mm;
+  font-size: 12px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.din5008-letter__content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 5mm;
+  color: #0f172a;
+}
+
+.din5008-letter__salutation {
+  margin: 0;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: #0f172a;
+}
+
+.din5008-letter__body {
+  color: #0f172a;
+}
+
+.din5008-letter__body .rt-preview p,
+.din5008-letter__closing .rt-preview p {
+  margin: 0 0 4mm;
+}
+
+.din5008-letter__body .rt-preview p:last-child,
+.din5008-letter__closing .rt-preview p:last-child {
+  margin-bottom: 0;
+}
+
+.din5008-letter__body .rt-preview ul,
+.din5008-letter__body .rt-preview ol,
+.din5008-letter__closing .rt-preview ul,
+.din5008-letter__closing .rt-preview ol {
+  margin: 0 0 4mm;
+  padding-left: 5mm;
+}
+
+.din5008-letter__closing {
+  color: #0f172a;
+}
+
+.din5008-letter__signature {
+  margin-top: auto;
+  padding-top: 12mm;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5mm;
+}
+
+.din5008-letter__signature-space {
+  height: 10mm;
+}
+
+.din5008-letter__signature-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.din5008-letter__signature-title {
+  font-size: 11px;
+  color: #64748b;
+}
+
+
+.cover-letter-signature-image {
+  display: block;
+  align-self: flex-start;
+  max-width: 220px;
+  max-height: 56px;
+  width: auto;
+  object-fit: contain;
+  margin: 0 0 2mm;
+}
+/* ─── Modern Cover Letter Layout ──────────────────────────────────────────── */
+.cover-letter-modern {
+  --cover-letter-modern-accent: #6366f1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+.cover-letter-modern__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+  flex-shrink: 0;
+  padding: 28px 40px 24px;
+  background: var(--cover-letter-modern-accent);
+}
+
+.cover-letter-modern__name {
+  margin: 0;
+  color: white;
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: -0.4px;
+  line-height: 1.1;
+}
+
+.cover-letter-modern__title {
+  margin: 4px 0 0;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.cover-letter-modern__contacts {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+}
+
+.cover-letter-modern__contact {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 10px;
+}
+
+.cover-letter-modern__body {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: 32px 40px 28px;
+}
+
+.cover-letter-modern__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 18px;
+  font-size: 11.5px;
+  line-height: 1.7;
+}
+
+.cover-letter-modern__recipient-block {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cover-letter-modern__date {
+  margin-bottom: 0;
+  align-self: flex-end;
+  color: #94a3b8;
+  text-align: right;
+}
+
+.cover-letter-modern__recipient-name {
+  color: #0f172a;
+  font-weight: 700;
+}
+
+.cover-letter-modern__recipient-company {
+  color: #475569;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.cover-letter-modern__recipient-address {
+  margin-top: 2px;
+  color: #64748b;
+  white-space: pre-line;
+}
+
+.cover-letter-modern__subject {
+  margin-bottom: 14px;
+  color: #0f172a;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.cover-letter-modern__content {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  color: #0f172a;
+  font-size: 12px;
+  line-height: 1.85;
+}
+
+.cover-letter-modern__opening {
+  margin: 0;
+  color: #0f172a;
+  font-weight: 500;
+}
+
+.cover-letter-modern__text .rt-preview p {
+  margin: 0 0 14px;
+}
+
+.cover-letter-modern__text .rt-preview p:last-child {
+  margin-bottom: 0;
+}
+
+.cover-letter-modern__text .rt-preview ul,
+.cover-letter-modern__text .rt-preview ol {
+  margin: 0 0 14px;
+  padding-left: 20px;
+}
+
+.cover-letter-modern__signature {
+  margin-top: 8px;
+  padding-top: 12px;
+}
+
+.cover-letter-modern__signature-name {
+  color: #0f172a;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.cover-letter-modern__signature-title {
+  margin-top: 2px;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 600;
+}
