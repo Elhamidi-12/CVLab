@@ -215,7 +215,7 @@ function waitForImages(root: HTMLElement): Promise<void> {
   return Promise.all(
     images.map((img) => {
       if (img.complete) return Promise.resolve();
-      if ("decode" in img) return img.decode().catch(() => undefined);
+      if (typeof img.decode === "function") return img.decode().catch(() => undefined);
       return new Promise<void>((resolve) => {
         img.addEventListener("load", () => resolve(), { once: true });
         img.addEventListener("error", () => resolve(), { once: true });
@@ -735,6 +735,26 @@ function plainText(html: string | undefined): string {
   return (doc.body.textContent ?? "").replace(/\s+/g, " ").trim();
 }
 
+function parseCoverLetterDate(value: string): Date | null {
+  if (!value) return null;
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    const parsed = new Date(`${value}T00:00:00`);
+    return Number.isNaN(parsed.getTime()) ? null : parsed;
+  }
+  const fallback = new Date(value);
+  return Number.isNaN(fallback.getTime()) ? null : fallback;
+}
+
+function formatCoverLetterDate(value: string): string {
+  const parsed = parseCoverLetterDate(value);
+  if (!parsed) return "";
+  return new Intl.DateTimeFormat(undefined, {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  }).format(parsed);
+}
+
 function htmlBlocks(html: string | undefined): string[] {
   if (!html) return [];
   const parsed = new DOMParser().parseFromString(html, "text/html");
@@ -993,11 +1013,12 @@ export function exportCoverLetterPdf(data: CoverLetterData, filename = "cover-le
     writer.y += 12;
   }
 
-  if (data.date) {
+  const displayDate = formatCoverLetterDate(data.date);
+  if (displayDate) {
     writer.doc.setFont(writer.font, "normal");
     writer.doc.setFontSize(9);
     writer.doc.setTextColor(100, 116, 139);
-    writer.doc.text(data.date, PAGE_W - MARGIN_X, writer.y, { align: "right" });
+    writer.doc.text(displayDate, PAGE_W - MARGIN_X, writer.y, { align: "right" });
     writer.y += 26;
   }
 
@@ -1090,6 +1111,7 @@ function resumeAtsLines(data: ResumeData): string[] {
 }
 
 function coverLetterAtsLines(data: CoverLetterData): string[] {
+  const displayDate = formatCoverLetterDate(data.date);
   return uniqueLines([
     data.sender.name,
     data.sender.title,
@@ -1099,7 +1121,7 @@ function coverLetterAtsLines(data: CoverLetterData): string[] {
     data.recipient.name,
     data.recipient.company,
     ...data.recipient.address.split("\n"),
-    data.date,
+    displayDate,
     data.subject,
     ...htmlBlocks(data.opening),
     ...htmlBlocks(data.body),

@@ -1,4 +1,4 @@
-import { Mail, Phone, MapPin, Github, Linkedin, UserRound } from "lucide-react";
+import { Mail, Phone, MapPin, Globe, Github, Linkedin, UserRound } from "lucide-react";
 import {
   createElement,
   forwardRef,
@@ -8,6 +8,7 @@ import {
   useState,
 } from "react";
 import { createRoot } from "react-dom/client";
+import DOMPurify from "dompurify";
 import { createPreviewAccentPalette, type PreviewAccentPalette } from "./preview-accent";
 import { exportTextBasedElementPdf } from "../pdf-export";
 
@@ -97,10 +98,11 @@ function htmlEmpty(html: string | undefined): boolean {
 function RichContent({ html, style }: { html: string; style?: React.CSSProperties }) {
   if (htmlEmpty(html)) return null;
   const content = html.startsWith("<") ? html : `<p>${html}</p>`;
+  const safeHtml = DOMPurify.sanitize(content);
   return (
     <div
       className="rt-preview"
-      dangerouslySetInnerHTML={{ __html: content }}
+      dangerouslySetInnerHTML={{ __html: safeHtml }}
       style={style}
     />
   );
@@ -1002,7 +1004,6 @@ export const ResumePreview = forwardRef<ResumePreviewHandle, { data: ResumeData 
       ro.observe(el);
       updatePages(el);
       return () => ro.disconnect();
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     // ── PDF export ────────────────────────────────────────────────────────────

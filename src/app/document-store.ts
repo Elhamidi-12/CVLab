@@ -23,12 +23,8 @@ export type SavedDocument = ResumeDocument | CoverLetterDocument;
 
 export const STORAGE_KEY = "cvlab.documents";
 
-function getTodayDateLabel(): string {
-  return new Intl.DateTimeFormat(undefined, {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  }).format(new Date());
+function getTodayIsoDate(): string {
+  return new Date().toISOString().slice(0, 10);
 }
 
 const DEFAULT_SECTION_TITLES: Record<string, string> = {
@@ -135,7 +131,7 @@ export function createDefaultCoverLetterData(): CoverLetterData {
       company: "Acme, Inc.",
       address: "760 Market St\nSan Francisco, CA 94102",
     },
-    date: getTodayDateLabel(),
+    date: getTodayIsoDate(),
     opening: "Sehr geehrte Damen und Herren,",
     body:
       "<p>I'm excited to apply for the Senior Product Designer role at Acme. Having spent the last seven years building design systems at Linear and Notion, I've come to deeply admire how Acme shapes the way modern teams create together.</p><p>At Linear, I led the redesign of the core issue tracker, improving task creation speed by 38% and shipping a design system now used by 200+ engineers. I believe I could bring that same rigor to Acme's product surface.</p>",

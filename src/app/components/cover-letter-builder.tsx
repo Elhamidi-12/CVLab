@@ -36,10 +36,28 @@ function formatHumanDate(date: Date): string {
   }).format(date);
 }
 
-function parseHumanDate(value: string): Date | null {
-  const timestamp = Date.parse(value);
-  if (Number.isNaN(timestamp)) return null;
-  return new Date(timestamp);
+function parseCoverLetterDate(value: string): Date | null {
+  if (!value) return null;
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    const parsed = new Date(`${value}T00:00:00`);
+    return Number.isNaN(parsed.getTime()) ? null : parsed;
+  }
+  const fallback = new Date(value);
+  return Number.isNaN(fallback.getTime()) ? null : fallback;
+}
+
+function toIsoDateString(input: Date | string): string {
+  const date = typeof input === "string" ? parseCoverLetterDate(input) : input;
+  if (!date || Number.isNaN(date.getTime())) return new Date().toISOString().slice(0, 10);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function formatCoverLetterDate(value: string): string {
+  const date = parseCoverLetterDate(value);
+  return date ? formatHumanDate(date) : formatHumanDate(new Date());
 }
 
 const DATE_PRESETS = [
@@ -169,7 +187,7 @@ export function CoverLetterBuilder({
   onSave: (document: CoverLetterDocument) => void;
   onDelete: (id: string) => void;
 }) {
-  const [data, setData] = useState<CoverLetterData>({ ...initial, ...document.data });
+  const [data, setData] = useState<CoverLetterData>({ ...initial, ...document.data, date: toIsoDateString(document.data?.date ?? initial.date) });
   const [title, setTitle] = useState(document.title);
   const [mobileView, setMobileView] = useState<"edit" | "preview">("edit");
   const [saved, setSaved] = useState(true);
@@ -180,7 +198,7 @@ export function CoverLetterBuilder({
   const signatureInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    setData({ ...initial, ...document.data });
+    setData({ ...initial, ...document.data, date: toIsoDateString(document.data?.date ?? initial.date) });
     setTitle(document.title);
     setSaved(true);
     setDirty(false);
@@ -452,7 +470,7 @@ export function CoverLetterBuilder({
                       onClick={() => setDatePickerOpened((open) => !open)}
                       className="w-full px-3 py-2 rounded-lg border border-slate-200 bg-white text-left text-[13px] text-slate-900 hover:border-slate-300 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 outline-none transition-all"
                     >
-                      {data.date || formatHumanDate(new Date())}
+                      {formatCoverLetterDate(data.date)}
                     </button>
                   </Popover.Target>
                   <Popover.Dropdown p={0} className="overflow-hidden">
@@ -460,13 +478,13 @@ export function CoverLetterBuilder({
                       <div className="w-[130px] border-r border-slate-200 p-2 bg-slate-50">
                         <div className="flex flex-col gap-1">
                           {DATE_PRESETS.map((preset) => {
-                            const active = dayjs(parseHumanDate(data.date)).isSame(preset.value, "day");
+                            const active = dayjs(parseCoverLetterDate(data.date)).isSame(preset.value, "day");
                             return (
                               <button
                                 key={preset.label}
                                 type="button"
                                 onClick={() => {
-                                  update((d) => ({ ...d, date: formatHumanDate(preset.value) }));
+                                  update((d) => ({ ...d, date: toIsoDateString(preset.value) }));
                                   setDatePickerOpened(false);
                                 }}
                                 className={`px-2 py-1.5 rounded-md text-left text-[12px] transition-colors ${
@@ -483,10 +501,10 @@ export function CoverLetterBuilder({
                       </div>
                       <div className="p-2">
                         <DatePicker
-                          value={parseHumanDate(data.date)}
+                          value={parseCoverLetterDate(data.date)}
                           onChange={(value) => {
                             if (!value) return;
-                            update((d) => ({ ...d, date: formatHumanDate(value) }));
+                            update((d) => ({ ...d, date: toIsoDateString(value) }));
                           }}
                           size="sm"
                         />

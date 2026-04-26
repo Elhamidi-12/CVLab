@@ -1,4 +1,5 @@
 import { ChevronDown, ChevronUp, Pencil, Trash2, Bold, Italic, Underline as UnderlineIcon, List, ListOrdered } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { useState, ReactNode, useRef, useEffect } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
@@ -19,7 +20,7 @@ export function Section({
   onDelete,
 }: {
   title: string;
-  icon?: any;
+  icon?: LucideIcon;
   defaultOpen?: boolean;
   children: ReactNode;
   onRename?: (title: string) => void;
@@ -256,7 +257,7 @@ export function RichTextEditor({
   useEffect(() => {
     if (!editor) return;
     if (value !== prevValueRef.current && value !== editor.getHTML()) {
-      editor.commands.setContent(value || "<p></p>", false);
+      editor.commands.setContent(value || "<p></p>", { emitUpdate: false });
     }
     prevValueRef.current = value;
   }, [value, editor]);

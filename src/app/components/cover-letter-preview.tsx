@@ -8,6 +8,7 @@ import {
   useState,
 } from "react";
 import { createRoot } from "react-dom/client";
+import DOMPurify from "dompurify";
 import { exportTextBasedElementPdf } from "../pdf-export";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -40,7 +41,37 @@ function htmlEmpty(html: string | undefined): boolean {
 function RichContent({ html }: { html: string }) {
   if (htmlEmpty(html)) return null;
   const content = html.startsWith("<") ? html : `<p>${html}</p>`;
-  return <div className="rt-preview" dangerouslySetInnerHTML={{ __html: content }} />;
+  const safeHtml = DOMPurify.sanitize(content);
+  return <div className="rt-preview" dangerouslySetInnerHTML={{ __html: safeHtml }} />;
+}
+
+function parseCoverLetterDate(dateValue: string): Date | null {
+  if (!dateValue) return null;
+  if (/^\d{4}-\d{2}-\d{2}$/.test(dateValue)) {
+    const parsed = new Date(`${dateValue}T00:00:00`);
+    return Number.isNaN(parsed.getTime()) ? null : parsed;
+  }
+  const fallback = new Date(dateValue);
+  return Number.isNaN(fallback.getTime()) ? null : fallback;
+}
+
+function formatCoverLetterDate(dateValue: string): string {
+  const parsed = parseCoverLetterDate(dateValue);
+  if (!parsed) return "";
+  return new Intl.DateTimeFormat(undefined, {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  }).format(parsed);
+}
+
+function toIsoDateString(input: string | Date): string {
+  const date = typeof input === "string" ? parseCoverLetterDate(input) : input;
+  if (!date || Number.isNaN(date.getTime())) return new Date().toISOString().slice(0, 10);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
 function SignatureImage({ src }: { src?: string }) {
@@ -62,7 +93,6 @@ const A4_HEIGHT = 1123;
 // Top padding removed so letter templates start flush at the page edge.
 const PAGE_PAD_TOP = 0;
 const PAGE_PAD_BOTTOM = 91; // 24 mm
-const PAGE_PAD_H = 76; // 20 mm  (templates use this for left / right padding)
 const CONTENT_HEIGHT = A4_HEIGHT - PAGE_PAD_TOP - PAGE_PAD_BOTTOM; // 941 px
 
 // ─── DIN 5008 TEMPLATE ────────────────────────────────────────────────────────
@@ -70,6 +100,7 @@ const CONTENT_HEIGHT = A4_HEIGHT - PAGE_PAD_TOP - PAGE_PAD_BOTTOM; // 941 px
 function Din5008Template({ data }: { data: CoverLetterData }) {
   const { sender, recipient, date, subject, signature, opening, body, closing } = data;
   const fontScale = Math.max(80, Math.min(130, data.fontSize ?? 100)) / 100;
+  const displayDate = formatCoverLetterDate(date);
 
   return (
     <div className="cover-letter-din-template" style={{ width: `${100 / fontScale}%`, zoom: fontScale }}>
@@ -82,7 +113,7 @@ function Din5008Template({ data }: { data: CoverLetterData }) {
             {sender.phone && <div>{sender.phone}</div>}
             {sender.location && <div>{sender.location}</div>}
           </div>
-          <div className="din5008-letter__date">{date}</div>
+          <div className="din5008-letter__date">{displayDate}</div>
         </div>
 
         <div className="din5008-letter__recipient" data-block="section">
@@ -130,6 +161,7 @@ function ModernCLTemplate({ data }: { data: CoverLetterData }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const { sender, recipient, date, opening, body, closing, accent, signature } = data;
   const fontScale = Math.max(80, Math.min(130, data.fontSize ?? 100)) / 100;
+  const displayDate = formatCoverLetterDate(date);
 
   useEffect(() => {
     setCssVariable(rootRef.current, "--cover-letter-modern-accent", accent);
@@ -156,7 +188,7 @@ function ModernCLTemplate({ data }: { data: CoverLetterData }) {
             {recipient.company && <div className="cover-letter-modern__recipient-company">{recipient.company}</div>}
             {recipient.address && <div className="cover-letter-modern__recipient-address">{recipient.address}</div>}
           </div>
-          <div className="cover-letter-modern__date">{date}</div>
+          <div className="cover-letter-modern__date">{displayDate}</div>
         </div>
 
         <div className="cover-letter-modern__subject" data-block="section">
@@ -331,6 +363,7 @@ export const CoverLetterPreview = forwardRef<CoverLetterPreviewHandle, { data: C
 
     const safeData: CoverLetterData = {
       ...data,
+      date: toIsoDateString(data.date),
       fontSize: data.fontSize ?? 100,
       template: data.template ?? "professional",
     };

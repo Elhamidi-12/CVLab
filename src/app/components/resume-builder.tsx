@@ -20,9 +20,10 @@ import {
   Image,
   X,
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { ResumePreview, ResumeData, ResumePreviewHandle } from "./resume-preview";
 import type { ResumeDocument } from "../document-store";
-import { Section, Field, Input, Textarea, Button, ColorPicker, Select, RichTextEditor } from "./editor-ui";
+import { Section, Field, Input, Button, ColorPicker, Select, RichTextEditor } from "./editor-ui";
 
 const FONT_OPTIONS = [
   { value: "Inter, sans-serif", label: "Inter (Modern)" },
@@ -40,7 +41,7 @@ const DEFAULT_SECTION_TITLES: Record<string, string> = {
   languages: "Languages",
 };
 
-const SECTION_ICONS: Record<string, any> = {
+const SECTION_ICONS: Record<string, LucideIcon> = {
   summary: FileText,
   experience: Briefcase,
   projects: Folder,
@@ -249,7 +250,7 @@ function ClassicThumb() {
   );
 }
 
-function ModernThumb() {
+function _ModernThumb() {
   return (
     <div className="flex h-full overflow-hidden rounded text-[0]">
       <div className="flex w-[36%] flex-col gap-[2.5px] bg-[color:var(--accent)] px-1 py-[5px]">
