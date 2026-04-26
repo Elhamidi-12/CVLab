@@ -146,14 +146,6 @@ function Dashboard({
             </div>
             <span className="text-[17px] font-bold text-[#0f172a]">CV Maker</span>
           </div>
-          <div className="flex items-center gap-3">
-            <button className="px-3 py-1.5 rounded-lg hover:bg-slate-100 text-[14px] text-[#475569]">
-              Templates
-            </button>
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-400 to-indigo-600 flex items-center justify-center text-white text-[13px] font-semibold">
-              AM
-            </div>
-          </div>
         </div>
       </nav>
 
@@ -207,22 +199,6 @@ function Dashboard({
         <section>
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-[16px] font-semibold text-[#0f172a]">Recent documents</h3>
-            <div className="flex flex-wrap gap-2">
-              <button
-                type="button"
-                onClick={() => onCreate("resume")}
-                className="text-indigo-600 hover:text-indigo-700 flex items-center gap-1 text-[14px] font-medium"
-              >
-                <Plus size={14} /> New Resume
-              </button>
-              <button
-                type="button"
-                onClick={() => onCreate("cover")}
-                className="text-indigo-600 hover:text-indigo-700 flex items-center gap-1 text-[14px] font-medium"
-              >
-                <Plus size={14} /> New Cover Letter
-              </button>
-            </div>
           </div>
 
           <div className="bg-white rounded-xl border border-slate-200 overflow-hidden divide-y divide-slate-100">
