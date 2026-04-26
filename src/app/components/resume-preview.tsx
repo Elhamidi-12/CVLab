@@ -621,7 +621,7 @@ function ModernTemplate({ data, showContactIcons = true }: { data: ResumeData; s
 
 function MinimalSectionTitle({ palette, children }: { palette: PreviewAccentPalette; children: React.ReactNode }) {
   return (
-    <div style={{ marginBottom: "9px" }}>
+    <div data-block="section-title" style={{ marginBottom: "9px" }}>
       <span style={{ fontSize: "9.5px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", ...palette.text }}>
         {children}
       </span>
@@ -642,9 +642,11 @@ function MinimalTemplate({ data, showContactIcons = true }: { data: ResumeData; 
     if (id === "summary") {
       if (htmlEmpty(data.summary)) return null;
       return (
-        <section key={id} data-block="section" style={{ marginBottom: "16px" }}>
+        <section key={id} style={{ marginBottom: "16px" }}>
           <MinimalSectionTitle palette={accentPalette}>{title}</MinimalSectionTitle>
-          <RichContent html={data.summary} style={{ fontSize: "11.5px", lineHeight: 1.75, color: "#475569" }} />
+          <div data-block="item">
+            <RichContent html={data.summary} style={{ fontSize: "11.5px", lineHeight: 1.75, color: "#475569" }} />
+          </div>
         </section>
       );
     }
@@ -652,7 +654,7 @@ function MinimalTemplate({ data, showContactIcons = true }: { data: ResumeData; 
     if (id === "experience") {
       if (!data.experience.length) return null;
       return (
-        <section key={id} data-block="section" style={{ marginBottom: "16px" }}>
+        <section key={id} style={{ marginBottom: "16px" }}>
           <MinimalSectionTitle palette={accentPalette}>{title}</MinimalSectionTitle>
           <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
             {data.experience.map((e) => (
@@ -683,7 +685,7 @@ function MinimalTemplate({ data, showContactIcons = true }: { data: ResumeData; 
     if (id === "education") {
       if (!data.education.length) return null;
       return (
-        <section key={id} data-block="section" style={{ marginBottom: "16px" }}>
+        <section key={id} style={{ marginBottom: "16px" }}>
           <MinimalSectionTitle palette={accentPalette}>{title}</MinimalSectionTitle>
           <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
             {data.education.map((e) => (
@@ -708,7 +710,7 @@ function MinimalTemplate({ data, showContactIcons = true }: { data: ResumeData; 
     if (id === "projects") {
       if (!data.projects.length) return null;
       return (
-        <section key={id} data-block="section" style={{ marginBottom: "16px" }}>
+        <section key={id} style={{ marginBottom: "16px" }}>
           <MinimalSectionTitle palette={accentPalette}>{title}</MinimalSectionTitle>
           <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
             {data.projects.map((project) => (
@@ -741,9 +743,9 @@ function MinimalTemplate({ data, showContactIcons = true }: { data: ResumeData; 
     if (id === "skills") {
       if (!data.skills.length) return null;
       return (
-        <section key={id} data-block="section" style={{ marginBottom: "16px" }}>
+        <section key={id} style={{ marginBottom: "16px" }}>
           <MinimalSectionTitle palette={accentPalette}>{title}</MinimalSectionTitle>
-          <div className="flex flex-wrap gap-1">
+          <div data-block="item" className="flex flex-wrap gap-1">
             {data.skills.map((skill) => (
               <span key={skill} className="text-[10px] py-0.5 px-2 rounded" style={accentPalette.chip}>
                 {skill}
@@ -757,9 +759,9 @@ function MinimalTemplate({ data, showContactIcons = true }: { data: ResumeData; 
     if (id === "languages") {
       if (!data.languages.length) return null;
       return (
-        <section key={id} data-block="section" style={{ marginBottom: "16px" }}>
+        <section key={id} style={{ marginBottom: "16px" }}>
           <MinimalSectionTitle palette={accentPalette}>{title}</MinimalSectionTitle>
-          <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
+          <div data-block="item" style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
             {data.languages.map((l) => (
               <span key={l.id} style={{ fontSize: "11.5px", color: "#475569" }}>
                 <span style={{ fontWeight: 600, color: "#1e293b" }}>{l.name}</span>
@@ -774,9 +776,11 @@ function MinimalTemplate({ data, showContactIcons = true }: { data: ResumeData; 
     const custom = data.customSections.find((s) => s.id === id);
     if (custom) {
       return (
-        <section key={id} data-block="section" style={{ marginBottom: "16px" }}>
+        <section key={id} style={{ marginBottom: "16px" }}>
           <MinimalSectionTitle palette={accentPalette}>{title}</MinimalSectionTitle>
-          <RichContent html={custom.content} style={{ fontSize: "11.5px", lineHeight: 1.75, color: "#475569" }} />
+          <div data-block="item">
+            <RichContent html={custom.content} style={{ fontSize: "11.5px", lineHeight: 1.75, color: "#475569" }} />
+          </div>
         </section>
       );
     }
@@ -875,12 +879,6 @@ interface PageLayout {
  * preventing the "same content appears on two consecutive pages" bug.
  */
 function computePages(el: HTMLElement, contentHeight = CONTENT_HEIGHT, firstPageContentHeight = contentHeight): PageLayout {
-  const totalHeight = el.scrollHeight;
-
-  if (totalHeight <= firstPageContentHeight) {
-    return { starts: [0], ends: [totalHeight] };
-  }
-
   const containerTop = el.getBoundingClientRect().top;
   const blocks = Array.from(el.querySelectorAll("[data-block]")) as HTMLElement[];
 
@@ -892,6 +890,18 @@ function computePages(el: HTMLElement, contentHeight = CONTENT_HEIGHT, firstPage
     .filter((b) => b.height > 8)
     .sort((a, b) => a.top - b.top);
 
+  // scrollHeight can include trailing whitespace/margins. Use the last block's bottom
+  // as the effective content height to avoid rendering empty trailing pages.
+  const lastBlockBottom = blockPositions.length
+    ? Math.max(...blockPositions.map((b) => b.top + b.height))
+    : 0;
+  const totalHeight = Math.max(lastBlockBottom, el.scrollHeight);
+  const effectiveTotalHeight = lastBlockBottom > 0 ? lastBlockBottom : totalHeight;
+
+  if (effectiveTotalHeight <= firstPageContentHeight) {
+    return { starts: [0], ends: [effectiveTotalHeight] };
+  }
+
   const starts: number[] = [0];
   const ends: number[] = [];
   let pageStart = 0;
@@ -899,7 +909,7 @@ function computePages(el: HTMLElement, contentHeight = CONTENT_HEIGHT, firstPage
 
   while (true) {
     const pageBudget = pageIndex === 0 ? firstPageContentHeight : contentHeight;
-    if (pageStart + pageBudget >= totalHeight) break;
+    if (pageStart + pageBudget >= effectiveTotalHeight) break;
 
     const pageEnd = pageStart + pageBudget;
     let breakAt = pageEnd;
@@ -922,7 +932,7 @@ function computePages(el: HTMLElement, contentHeight = CONTENT_HEIGHT, firstPage
     pageIndex += 1;
   }
 
-  ends.push(totalHeight); // last page ends at total content height
+  ends.push(effectiveTotalHeight); // last page ends at effective content height
   return { starts, ends };
 }
 

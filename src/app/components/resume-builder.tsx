@@ -137,18 +137,19 @@ function normalizeResumeData(source: ResumeData | undefined): ResumeData {
   const rawOrder = Array.isArray(data.sectionOrder) && data.sectionOrder.length
     ? data.sectionOrder
     : [...DEFAULT_SECTION_ORDER];
-  const orderWithoutProjects = rawOrder.filter((id) => id !== "projects");
-  const hasProjects = rawOrder.includes("projects");
 
-  let sectionOrder = orderWithoutProjects;
-  if (!hasProjects) {
-    const experienceIndex = orderWithoutProjects.indexOf("experience");
-    const insertAt = experienceIndex >= 0 ? experienceIndex + 1 : Math.min(2, orderWithoutProjects.length);
-    sectionOrder = [
-      ...orderWithoutProjects.slice(0, insertAt),
-      "projects",
-      ...orderWithoutProjects.slice(insertAt),
-    ];
+  // Ensure "projects" is present exactly once in the section order.
+  let sectionOrder = rawOrder.filter((id) => id !== "projects");
+  const hasProjects = rawOrder.includes("projects");
+  if (hasProjects) {
+    // Keep the user's chosen position by re-inserting projects at its first occurrence index.
+    const insertAt = Math.max(0, rawOrder.indexOf("projects"));
+    sectionOrder.splice(Math.min(insertAt, sectionOrder.length), 0, "projects");
+  } else {
+    // Default insert: after experience (or near the top if missing).
+    const experienceIndex = sectionOrder.indexOf("experience");
+    const insertAt = experienceIndex >= 0 ? experienceIndex + 1 : Math.min(2, sectionOrder.length);
+    sectionOrder.splice(insertAt, 0, "projects");
   }
 
   const missingCustomIds = customIds.filter((id) => !sectionOrder.includes(id));
