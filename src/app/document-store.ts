@@ -106,7 +106,7 @@ export function createDefaultResumeData(): ResumeData {
           "<p>Built a resume and cover-letter editor with live preview, section reordering, and ATS-friendly PDF export.</p>",
       },
     ],
-    skills: ["Figma", "Design Systems", "Prototyping", "User Research", "A11y", "React", "TypeScript"],
+    skills: ["Design Systems", "Prototyping", "User Research", "A11y", "React", "TypeScript"],
     languages: [
       { id: "1", name: "English", level: "Native" },
       { id: "2", name: "Spanish", level: "Fluent" },
@@ -132,13 +132,13 @@ export function createDefaultCoverLetterData(): CoverLetterData {
     },
     recipient: {
       name: "Hiring Team",
-      company: "Figma, Inc.",
+      company: "Acme, Inc.",
       address: "760 Market St\nSan Francisco, CA 94102",
     },
     date: getTodayDateLabel(),
     opening: "Sehr geehrte Damen und Herren,",
     body:
-      "<p>I'm excited to apply for the Senior Product Designer role at Figma. Having spent the last seven years building design systems at Linear and Notion, I've come to deeply admire how Figma shapes the way modern teams create together.</p><p>At Linear, I led the redesign of the core issue tracker, improving task creation speed by 38% and shipping a design system now used by 200+ engineers. I believe I could bring that same rigor to Figma's editor surface.</p>",
+      "<p>I'm excited to apply for the Senior Product Designer role at Acme. Having spent the last seven years building design systems at Linear and Notion, I've come to deeply admire how Acme shapes the way modern teams create together.</p><p>At Linear, I led the redesign of the core issue tracker, improving task creation speed by 38% and shipping a design system now used by 200+ engineers. I believe I could bring that same rigor to Acme's product surface.</p>",
     closing: "<p>Mit freundlichen Grüßen</p>",
   };
 }

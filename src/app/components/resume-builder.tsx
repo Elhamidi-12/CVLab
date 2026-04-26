@@ -120,7 +120,7 @@ const initial: ResumeData = {
         "<p>Built a resume and cover-letter editor with live preview, section reordering, and ATS-friendly PDF export.</p>",
     },
   ],
-  skills: ["Figma", "Design Systems", "Prototyping", "User Research", "A11y", "React", "TypeScript"],
+  skills: ["Design Systems", "Prototyping", "User Research", "A11y", "React", "TypeScript"],
   languages: [
     { id: "1", name: "English", level: "Native" },
     { id: "2", name: "Spanish", level: "Fluent" },

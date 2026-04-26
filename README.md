@@ -1,11 +1,9 @@
+# CVLab
 
-  # CV Maker Design System
+CVLab is a resume and cover-letter builder with live preview, customization, and text-based (ATS-friendly) PDF export.
 
-  This is a code bundle for CV Maker Design System. The original project is available at https://www.figma.com/design/G71JfnOn8M0LdZ2JbAYkok/CV-Maker-Design-System.
+## Development
 
-  ## Running the code
-
-  Run `npm i` to install the dependencies.
-
-  Run `npm run dev` to start the development server.
-  
+- Install dependencies: `pnpm install` (or `npm install`)
+- Start dev server: `pnpm dev` (or `npm run dev`)
+- Build: `pnpm build` (or `npm run build`)
