@@ -4,6 +4,7 @@ dist/
 
 *.log
 *.err
+latest-export-preview.png
 
 .DS_Store
 Thumbs.db
