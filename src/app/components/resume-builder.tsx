@@ -1060,7 +1060,7 @@ export function ResumeBuilder({
               <ArrowLeft size={15} /> Back
             </Button>
             <div className="h-5 w-px bg-slate-200" />
-            <div className="min-w-0">
+            <div className="min-w-0 flex items-center gap-2">
               <input
                 value={title}
                 onChange={(e) => {
