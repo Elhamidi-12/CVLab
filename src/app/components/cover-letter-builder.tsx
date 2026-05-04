@@ -427,21 +427,21 @@ export function CoverLetterBuilder({
           {/* Recipient Info */}
           <Section title="Recipient Info" icon={Building2} defaultOpen={false}>
             <div className="flex flex-col gap-3 mt-1">
-              <Field label="Recipient Name">
-                <Input
-                  value={data.recipient.name}
-                  placeholder="Hiring Manager"
-                  onChange={(e) =>
-                    update((d) => ({ ...d, recipient: { ...d.recipient, name: e.target.value } }))
-                  }
-                />
-              </Field>
               <Field label="Company">
                 <Input
                   value={data.recipient.company}
                   placeholder="Acme Inc."
                   onChange={(e) =>
                     update((d) => ({ ...d, recipient: { ...d.recipient, company: e.target.value } }))
+                  }
+                />
+              </Field>
+              <Field label="Recipient Name ">
+                <Input
+                  value={data.recipient.name}
+                  placeholder="Hiring Manager"
+                  onChange={(e) =>
+                    update((d) => ({ ...d, recipient: { ...d.recipient, name: e.target.value } }))
                   }
                 />
               </Field>

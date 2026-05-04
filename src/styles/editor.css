@@ -412,7 +412,7 @@
 .cover-letter-modern__recipient-block {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
 }
 
 .cover-letter-modern__date {
@@ -434,7 +434,6 @@
 }
 
 .cover-letter-modern__recipient-address {
-  margin-top: 2px;
   color: #64748b;
   white-space: pre-line;
 }
