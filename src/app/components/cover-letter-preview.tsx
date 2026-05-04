@@ -117,8 +117,8 @@ function Din5008Template({ data }: { data: CoverLetterData }) {
         </div>
 
         <div className="din5008-letter__recipient" data-block="section">
-          {recipient.name && <div className="din5008-letter__recipient-name">{recipient.company}</div>}
-          {recipient.company && <div>{recipient.name}</div>}
+          {recipient.company && <div className="din5008-letter__recipient-name">{recipient.company}</div>}
+          {recipient.name && <div>{recipient.name}</div>}
           {recipient.address && <div className="din5008-letter__recipient-address">{recipient.address}</div>}
         </div>
 
@@ -184,8 +184,8 @@ function ModernCLTemplate({ data }: { data: CoverLetterData }) {
       <div className="cover-letter-modern__body">
         <div className="cover-letter-modern__meta" data-block="section">
           <div className="cover-letter-modern__recipient-block">
-            {recipient.name && <div className="cover-letter-modern__recipient-name">{recipient.company}</div>}
-            {recipient.company && <div className="cover-letter-modern__recipient-company">{recipient.name}</div>}
+            {recipient.company && <div className="cover-letter-modern__recipient-name">{recipient.company}</div>}
+            {recipient.name && <div className="cover-letter-modern__recipient-company">{recipient.name}</div>}
             {recipient.address && <div className="cover-letter-modern__recipient-address">{recipient.address}</div>}
           </div>
           <div className="cover-letter-modern__date">{displayDate}</div>
